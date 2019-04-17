@@ -13,9 +13,13 @@ import static org.junit.Assert.*;
 
 public class HistoryTest {
 
+    private static KeyRing keyRing;
+
+
     @BeforeClass
     public static void init() {
         Security.addProvider(new BouncyCastleProvider());
+        keyRing = KeyRing.generateNew("root", true);
     }
 
     @Test
@@ -37,30 +41,23 @@ public class HistoryTest {
         h.addPeerAction(pa1);
 
         String encodedHistory = h.encode();
-        System.out.println(encodedHistory);
         History test = History.decode(encodedHistory);
-
-        System.out.println(h);
-        System.out.println(test);
         assertEquals(h.toString(), test.toString());
     }
 
     @Test
     public void testComputeUnsignedDigest() throws PrivateKeyDecryptionException, BadPassphraseException {
         History h = new History();
-        KeyRing keyRing = KeyRing.generateNew("root", true);
-
         EncryptedAction encAction = new EncryptedAction(new Action("field0", "ah", "data"));
-        Peer peer = new Peer("moi", keyRing.getHexPublicKey());
         Group group0 = new Group("group0");
+        Peer peer = new Peer("moi", keyRing.getHexPublicKey());
         Digest digest = h.computeDigest(encAction, group0, keyRing);
 
         PeerAction pa = new PeerAction(encAction, peer, group0, digest);
         h.addPeerAction(pa);
 
-        System.out.println(h.validatePeerAction(pa, null));
-
-
         System.out.println(h.toString());
+
+        assertTrue(h.validatePeerAction(pa, null));
     }
 }

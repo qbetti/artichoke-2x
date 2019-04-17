@@ -1,9 +1,11 @@
 package ca.uqac.lif.artichoke;
 
-import java.util.Base64;
+import ca.uqac.lif.artichoke.encoding.Base64Encoder;
+import ca.uqac.lif.artichoke.encoding.StringEncoder;
 
 public class PeerAction {
 
+    private static final StringEncoder encoder = Base64Encoder.getInstance();
     private static final String SEP = "-";
 
     private EncryptedAction encryptedAction;
@@ -25,12 +27,12 @@ public class PeerAction {
 
     public String encode() {
         String toEncode = encryptedAction.encode() + SEP + peer.encode() + SEP + group.encode() + SEP + digest.encode();
-        return Base64.getEncoder().encodeToString(toEncode.getBytes());
+        return encoder.encodeToString(toEncode);
     }
 
 
     public static PeerAction decode(String encodedPeerAction) {
-        String decodedPeerAction = new String(Base64.getDecoder().decode(encodedPeerAction));
+        String decodedPeerAction = encoder.decodeToString(encodedPeerAction);
 
         String[] items = decodedPeerAction.split(SEP);
         if(items.length != 4) {

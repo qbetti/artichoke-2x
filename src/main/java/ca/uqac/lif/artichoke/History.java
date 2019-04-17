@@ -3,6 +3,7 @@ package ca.uqac.lif.artichoke;
 import ca.uqac.lif.artichoke.keyring.KeyRing;
 import ca.uqac.lif.artichoke.keyring.exceptions.BadPassphraseException;
 import ca.uqac.lif.artichoke.keyring.exceptions.PrivateKeyDecryptionException;
+import org.bouncycastle.jcajce.provider.digest.BCMessageDigest;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 
 import java.util.LinkedList;
@@ -10,7 +11,7 @@ import java.util.LinkedList;
 public class History {
 
     private final static String SEP = "%";
-    private final static SHA3.DigestSHA3 SHA3 = new SHA3.Digest256();
+    private final static BCMessageDigest hashFunction = new SHA3.Digest224();
 
     private LinkedList<PeerAction> peerActions;
 
@@ -74,7 +75,7 @@ public class History {
                 group.toString().getBytes(),
                 nextEncryptedAction.getBytes());
 
-        return SHA3.digest(concatenatedBytes);
+        return hashFunction.digest(concatenatedBytes);
     }
 
     public byte[] computeUnsignedDigest(EncryptedAction nextEncryptedAction, Group group) {

@@ -1,9 +1,11 @@
 package ca.uqac.lif.artichoke;
 
-import java.util.Base64;
+import ca.uqac.lif.artichoke.encoding.Base64Encoder;
+import ca.uqac.lif.artichoke.encoding.StringEncoder;
 
 public class Group {
 
+    private static final StringEncoder encoder = Base64Encoder.getInstance();
     private String id;
 
     public Group() {
@@ -15,12 +17,12 @@ public class Group {
     }
 
     public String encode() {
-        return Base64.getEncoder().encodeToString(id.getBytes());
+        return encoder.encodeToString(id.getBytes());
     }
 
     public static Group decode(String encodedGroup) {
         Group group = new Group();
-        group.id = new String(Base64.getDecoder().decode(encodedGroup));
+        group.id = new String(encoder.decode(encodedGroup));
         return group;
     }
 

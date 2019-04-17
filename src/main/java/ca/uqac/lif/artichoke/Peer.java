@@ -1,9 +1,11 @@
 package ca.uqac.lif.artichoke;
 
-import java.util.Base64;
+import ca.uqac.lif.artichoke.encoding.Base64Encoder;
+import ca.uqac.lif.artichoke.encoding.StringEncoder;
 
 public class Peer {
 
+    private static final StringEncoder encoder = Base64Encoder.getInstance();
     private static final String SEP = ",";
 
     private String id;
@@ -20,11 +22,11 @@ public class Peer {
 
     public String encode() {
         String toEncode = id + SEP + hexPublicKey;
-        return Base64.getEncoder().encodeToString(toEncode.getBytes());
+        return encoder.encodeToString(toEncode);
     }
 
     public static Peer decode(String encodedPeer) {
-        String decodedPeer = new String(Base64.getDecoder().decode(encodedPeer));
+        String decodedPeer = encoder.decodeToString(encodedPeer);
         String[] items = decodedPeer.split(SEP);
 
         if(items.length != 2)

@@ -1,8 +1,11 @@
 package ca.uqac.lif.artichoke;
 
-import java.util.Base64;
+import ca.uqac.lif.artichoke.encoding.Base64Encoder;
+import ca.uqac.lif.artichoke.encoding.StringEncoder;
 
 public class Digest {
+
+    private final static StringEncoder encoder = Base64Encoder.getInstance();
 
     private byte[] bytes;
 
@@ -15,13 +18,11 @@ public class Digest {
     }
 
     public String encode() {
-        return Base64.getEncoder().encodeToString(bytes);
+        return encoder.encodeToString(bytes);
     }
 
     public static Digest decode(String encodedDigest) {
-        Digest digest = new Digest();
-        digest.bytes = Base64.getDecoder().decode(encodedDigest);
-        return digest;
+        return new Digest(encoder.decode(encodedDigest));
     }
 
     @Override

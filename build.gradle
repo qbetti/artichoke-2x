@@ -26,5 +26,6 @@ configurations.all {
 dependencies {
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.61'
     compile "com.github.qbetti:artichoke-key-ring:master-SNAPSHOT"
+    compile "com.github.qbetti:artichoke-crypto:master-SNAPSHOT"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

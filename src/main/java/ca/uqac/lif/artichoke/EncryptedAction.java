@@ -1,9 +1,12 @@
 package ca.uqac.lif.artichoke;
 
 
-import java.util.Base64;
+import ca.uqac.lif.artichoke.encoding.Base64Encoder;
+import ca.uqac.lif.artichoke.encoding.StringEncoder;
 
 public class EncryptedAction {
+
+    private static final StringEncoder encoder = Base64Encoder.getInstance();
 
     private byte[] bytes;
 
@@ -11,19 +14,20 @@ public class EncryptedAction {
 
     }
 
+    public EncryptedAction(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
     public EncryptedAction(Action action) {
         this.bytes = action.toString().getBytes();
     }
 
     public String encode() {
-        return Base64.getEncoder().encodeToString(bytes);
+        return encoder.encodeToString(bytes);
     }
 
     public static EncryptedAction decode(String encodedEncryptedAction) {
-        EncryptedAction encryptedAction = new EncryptedAction();
-        encryptedAction.bytes = Base64.getDecoder().decode(encodedEncryptedAction);
-
-        return encryptedAction;
+        return new EncryptedAction(encoder.decode(encodedEncryptedAction));
     }
 
     @Override
@@ -33,27 +37,5 @@ public class EncryptedAction {
 
     public byte[] getBytes() {
         return bytes;
-    }
-
-    public byte[] concatenate(byte[] others) {
-        if(this.bytes == null)
-            return null;
-
-        if(others == null ) {
-            others = new byte[0];
-        }
-
-        byte[] result = new byte[others.length + this.bytes.length];
-
-        int offset = 0;
-        for(int i = 0; i < others.length; i++) {
-            result[offset + i] = others[i];
-        }
-        offset += others.length;
-        for(int i = 0; i < this.bytes.length; i++) {
-            result[offset + i] = this.bytes[i];
-        }
-
-        return result;
     }
 }
